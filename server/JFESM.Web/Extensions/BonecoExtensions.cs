@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using System.Linq;
 using JFESM.Model;
@@ -5,9 +6,9 @@ using JFESM.Web.Controllers.Items;
 
 namespace JFESM.Web.Extensions
 {
-    public static class AuthorExtensions
+    public static class BonecoExtensions
     {
-        public static BonecoDTO ToAuthorViewItem(this Boneco author)
+        public static BonecoDTO ToBonecoViewItem(this Boneco author)
         {
             return new BonecoDTO()
             {
@@ -15,9 +16,9 @@ namespace JFESM.Web.Extensions
             };
         }
 
-        public static IEnumerable<BonecoDTO> ToAuthorViewItems(this IEnumerable<Boneco> authors)
+        public static IEnumerable<BonecoDTO> ToBonecoViewItems(this IEnumerable<Boneco> authors)
         {
-            return authors.Select(a => a.ToAuthorViewItem()).ToArray();
+            return authors.Select(a => a.ToBonecoViewItem()).ToArray();
         }
     }
 }
