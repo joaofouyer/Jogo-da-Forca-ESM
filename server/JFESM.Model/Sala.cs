@@ -5,6 +5,7 @@ namespace JFESM.Model {
     public class Sala {
         private int id = 0;
         public List<Jogador> Jogadores { get; set; }
+        public JogoDaForca JogoDaForca { get; set; }
         public bool EsperandoPalavras {
             get { return Jogadores.All (j => j.EstaPronto) && Jogadores.Count > 3; }
         }
@@ -26,6 +27,13 @@ namespace JFESM.Model {
                 Jogadores.Add (new JogadorC () { Id = id });
             }
             id++;
+        }
+
+        public void IndicarPalavra(){
+            if(PalavrasDiferentes){
+                JogoDaForca.Secreta1.Palavra = Palavra1;
+                JogoDaForca.Secreta2.Palavra = Palavra2;
+            }
         }
     }
 }

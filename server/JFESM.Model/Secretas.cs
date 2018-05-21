@@ -7,16 +7,16 @@ namespace JFESM.Model {
 
         public bool EstaVisivel { get { return !palavraSecreta.Contains ("-"); } }
 
-        public Secreta (string palavra) {
-            if (string.IsNullOrWhiteSpace (palavra) || palavra.Contains (" ")) {
-                throw new ArgumentException ("Palavra não pode ser nula ou vazia");
-            }
-            this.palavraOriginal = palavra;
-            palavraSecreta = EsconderPalvra (palavra);
-        }
         public string Palavra {
             get {
                 return palavraSecreta;
+            }
+            set {
+                if (string.IsNullOrWhiteSpace (value) || value.Contains (" ")) {
+                    throw new ArgumentException ("Palavra não pode ser nula ou vazia");
+                }
+                this.palavraOriginal = value;
+                palavraSecreta = EsconderPalvra (value);
             }
         }
 
