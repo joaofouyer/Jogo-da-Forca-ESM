@@ -6,6 +6,9 @@ namespace JFESM.API
 {
     public interface ISalaService
     {
-        Task AdicionarJogador();
+        Jogador AdicionarJogador(string Id, string name);
+        IList<Jogador> GetPlayers();
+        void SetReady(string id);
+        Task<int> PegarTotalJogadores();
     }
 }

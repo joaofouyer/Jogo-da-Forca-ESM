@@ -22,12 +22,5 @@ namespace JFESM.Web
         {
             this.salaService = salaService;
         }
-
-        [HttpPost("{name}", Name = "AdiconarJogador")]
-        public async Task<IActionResult> AdiconarJogador(string name)
-        {
-            salaService.AdicionarJogador();
-            return Ok();
-        }
     }
 }

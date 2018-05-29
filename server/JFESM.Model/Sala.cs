@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace JFESM.Model {
     public class Sala {
-        private int id = 0;
         public List<Jogador> Jogadores { get; set; }
         public JogoDaForca JogoDaForca { get; set; }
         public bool EsperandoPalavras {
@@ -18,19 +17,27 @@ namespace JFESM.Model {
         public Sala () {
             Jogadores = new List<Jogador> (6);
         }
-        public void AdicionarJogador () {
+        public Jogador AdicionarJogador (string id, string name) {
+            Jogador jogador = null;
             if (Jogadores.Count == 0) {
-                Jogadores.Add (new JogadorA () { Id = id });
+                jogador = new JogadorA ();
             } else if (Jogadores.Count == 1) {
-                Jogadores.Add (new JogadorB () { Id = id });
+                jogador = new JogadorB ();
             } else if (Jogadores.Count < 6) {
-                Jogadores.Add (new JogadorC () { Id = id });
+                jogador = new JogadorC ();
             }
-            id++;
+            if (Jogadores.Count < 6) {
+                jogador.Id = id;
+                jogador.Name = name;
+                Jogadores.Add (jogador);
+                return jogador;
+            }
+
+            return null;
         }
 
-        public void IndicarPalavra(){
-            if(PalavrasDiferentes){
+        public void IndicarPalavra () {
+            if (PalavrasDiferentes) {
                 JogoDaForca.Secreta1.Palavra = Palavra1;
                 JogoDaForca.Secreta2.Palavra = Palavra2;
             }

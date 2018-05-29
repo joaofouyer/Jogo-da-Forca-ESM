@@ -16,9 +16,24 @@ namespace JFESM.Persistence
             this.sala = new Sala();
         }
 
-        public async Task AdicionarJogador()
+        public Jogador AdicionarJogador(string id, string name)
         {
-            sala.AdicionarJogador();
+            return sala.AdicionarJogador(id, name);
+        }
+
+        public IList<Jogador> GetPlayers()
+        {
+            return sala.Jogadores;
+        }
+
+        public int PegarTotalJogadores()
+        {
+           return  sala.Jogadores.Count();
+        }
+
+        public void SetReady(string id)
+        {
+            sala.Jogadores.FirstOrDefault(j => j.Id == id).EstaPronto = true;
         }
     }
 }

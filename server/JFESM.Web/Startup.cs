@@ -1,23 +1,24 @@
 ﻿using System;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System.Net.WebSockets;
 using JFESM.API;
 using JFESM.Core;
 using JFESM.Persistence;
-using JFESM.Web.Controllers;
 using JFESM.Web.Options;
+using JFESM.Web.WebSockets;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-namespace JFESM.Web {
+namespace JFESM.Web
+{
     public partial class Startup {
         public IConfigurationRoot Configuration { get; }
 
@@ -40,7 +41,9 @@ namespace JFESM.Web {
                 options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
-            // Add application services
+            // Add application WebSocket Manager
+            services.AddWebSocketManager ();
+            // Add application servicesc
             services.AddTransient<ISalaService, SalaService> ();
             services.AddTransient<ISalaRepository, SalaRepository> ();
             services.Add (new ServiceDescriptor (typeof (ClientOptions), provider => BuildClientOptions (), ServiceLifetime.Singleton));
@@ -57,7 +60,7 @@ namespace JFESM.Web {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
+        public void Configure (IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory) {
             loggerFactory.AddConsole (Configuration.GetSection ("Logging"));
             loggerFactory.AddDebug ();
 
@@ -72,8 +75,18 @@ namespace JFESM.Web {
                     .AllowAnyMethod ();
             });
 
-            app.UseMvc ();
-            app.UseWebSockets ();
+            var wsOptions = new WebSocketOptions () {
+                KeepAliveInterval = TimeSpan.FromSeconds (60),
+                ReceiveBufferSize = 4 * 1024
+            };
+            app.UseFileServer ();
+            app.UseWebSockets (wsOptions);
+            // app.MapWebSocketManager ("", serviceProvider.GetService<RoomHandler> ());
+            var webSocketOptions = new WebSocketOptions () {
+                KeepAliveInterval = TimeSpan.FromSeconds (120),
+                ReceiveBufferSize = 4 * 1024
+            };
+            app.UseWebSockets (webSocketOptions);
             app.Use (async (context, next) => {
                 if (context.Request.Path == "/ws") {
                     if (context.WebSockets.IsWebSocketRequest) {
@@ -87,11 +100,12 @@ namespace JFESM.Web {
                 }
 
             });
+            app.UseMvc ();
         }
 
         private async Task Echo (HttpContext context, WebSocket webSocket) {
             var buffer = new byte[1024 * 4];
-            var result = await webSocket.ReceiveAsync (new ArraySegment<byte> (buffer), CancellationToken.None);
+            WebSocketReceiveResult result = await webSocket.ReceiveAsync (new ArraySegment<byte> (buffer), CancellationToken.None);
             while (!result.CloseStatus.HasValue) {
                 await webSocket.SendAsync (new ArraySegment<byte> (buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
 

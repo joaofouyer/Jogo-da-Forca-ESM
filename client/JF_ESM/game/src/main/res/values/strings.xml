@@ -1,0 +1,7 @@
+<resources>
+    <string name="ready_button_text">PRONTO</string>
+    <string name="ready_text">Clique em pronto para começar:</string>
+    <string name="room_count">%1$s/6</string>
+    <string name="user_name_text">User Name</string>
+    <string name="player_status">Status</string>
+</resources>

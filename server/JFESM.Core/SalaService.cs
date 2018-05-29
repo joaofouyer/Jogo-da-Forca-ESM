@@ -14,8 +14,23 @@ namespace JFESM.Core {
             this.salaRepository = salaRepository;
         }
 
-        public async Task AdicionarJogador () {
-            salaRepository.AdicionarJogador ();
+        public Jogador AdicionarJogador (string id, string name) {
+            return salaRepository.AdicionarJogador (id, name);
+        }
+
+        public IList<Jogador> GetPlayers()
+        {
+            return salaRepository.GetPlayers();
+        }
+
+        public async Task<int> PegarTotalJogadores()
+        {
+            return salaRepository.PegarTotalJogadores();;
+        }
+
+        public void SetReady(string id)
+        {
+            salaRepository.SetReady(id);
         }
     }
 }

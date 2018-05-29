@@ -1,8 +1,7 @@
-namespace JFESM.Model
-{
-    public abstract class Jogador
-    {
-        public int Id { get; set; }
+namespace JFESM.Model {
+    public abstract class Jogador {
+        public string Id { get; set; }
+        public string Name { get; set; }
         public bool EstaPronto { get; set; }
     }
 }
