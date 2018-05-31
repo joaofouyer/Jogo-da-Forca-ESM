@@ -32,8 +32,9 @@ namespace JFESM.Web.WebSockets {
             string name = "Nome";
             if (!string.IsNullOrEmpty (name) && salaService.GetPlayers ().Count < 6) {
                 WebSocketConnectionManager.AddSocket (socket);
-                salaService.AdicionarJogador (WebSocketConnectionManager.GetId (socket), name);
-                await GetPlayers();
+                var jogador = salaService.AdicionarJogador (WebSocketConnectionManager.GetId (socket), name);
+                await SendMessageAsync ( WebSocketConnectionManager.GetId (socket), JsonConvert.SerializeObject (jogador.ToJogadorViewItem()));
+                // await GetPlayers();
             }
         }
         private async Task GetPlayers () {

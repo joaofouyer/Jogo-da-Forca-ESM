@@ -4,4 +4,5 @@
     <string name="room_count">%1$s/6</string>
     <string name="user_name_text">User Name</string>
     <string name="player_status">Status</string>
+    <string name="title_activity_waiting_playes">WaitingPlayes</string>
 </resources>

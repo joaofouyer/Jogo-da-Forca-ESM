@@ -74,44 +74,16 @@ namespace JFESM.Web
                     .AllowAnyHeader ()
                     .AllowAnyMethod ();
             });
-
-            var wsOptions = new WebSocketOptions () {
-                KeepAliveInterval = TimeSpan.FromSeconds (60),
-                ReceiveBufferSize = 4 * 1024
-            };
             app.UseFileServer ();
-            app.UseWebSockets (wsOptions);
-            // app.MapWebSocketManager ("", serviceProvider.GetService<RoomHandler> ());
-            var webSocketOptions = new WebSocketOptions () {
-                KeepAliveInterval = TimeSpan.FromSeconds (120),
+            var wsOptions = new WebSocketOptions()
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(60),
                 ReceiveBufferSize = 4 * 1024
             };
-            app.UseWebSockets (webSocketOptions);
-            app.Use (async (context, next) => {
-                if (context.Request.Path == "/ws") {
-                    if (context.WebSockets.IsWebSocketRequest) {
-                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync ();
-                        await Echo (context, webSocket);
-                    } else {
-                        context.Response.StatusCode = 400;
-                    }
-                } else {
-                    await next ();
-                }
 
-            });
+            app.UseWebSockets(wsOptions);
+            app.MapWebSocketManager("/sala", serviceProvider.GetService<RoomHandler>());
             app.UseMvc ();
-        }
-
-        private async Task Echo (HttpContext context, WebSocket webSocket) {
-            var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync (new ArraySegment<byte> (buffer), CancellationToken.None);
-            while (!result.CloseStatus.HasValue) {
-                await webSocket.SendAsync (new ArraySegment<byte> (buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
-
-                result = await webSocket.ReceiveAsync (new ArraySegment<byte> (buffer), CancellationToken.None);
-            }
-            await webSocket.CloseAsync (result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
 
         private JwtOptions BuildJwtOptions () {
